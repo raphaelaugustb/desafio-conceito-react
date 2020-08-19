@@ -1,14 +1,30 @@
-import React from "react";
-
+import React,{useState,useEffect} from "react";
+import api from './services/api'
 import "./styles.css";
 
 function App() {
+  const [repositories,setRepositories] = useState([])
+  
+  useEffect(() => {
+    api.get('/repositories').then(response => {
+      setRepositories(response.data)
+    })
+  })
   async function handleAddRepository() {
-    // TODO
+    const response = await api.post('/repositories',{
+      title:"Desafio React.js",
+      url:"https://github.com/raphaelaugustb/conceito-node-desafio",
+      techs:["Node.js", "..."],
+    })
+    const repositorie = response.data
+    
+    setRepositories(...repositories,repositorie)
   }
 
   async function handleRemoveRepository(id) {
-    // TODO
+    api.delete(`/repositories/${id}`)
+    setRepositories(repositories.filter(repositorie => repositorie.id !== id))
+    
   }
 
   return (
